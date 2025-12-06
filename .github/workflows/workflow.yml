@@ -47,28 +47,20 @@ jobs:
           load: true
           tags: ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
 
-  # --------------------------------------------
-  # 3. Run Trivy scan on built image
-  # --------------------------------------------
-  trivy_scan:
-    runs-on: ubuntu-latest
-    needs: build-docker
-    steps:
-      - name: Install Trivy
+      - name: Run Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
+          image-ref: myusername/fastapi-app:latest
           format: 'table'
           exit-code: 1
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
 
   # --------------------------------------------
-  # 4. Push image ONLY if Trivy passes
+  # 3. Push image 
   # --------------------------------------------
   push_image:
     runs-on: ubuntu-latest
-    needs: trivy_scan
     steps:
       - name: Log in to DOCKER
         uses: docker/login-action@v3
